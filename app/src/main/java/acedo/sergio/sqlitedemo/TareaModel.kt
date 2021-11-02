@@ -10,9 +10,10 @@ data class TareaModel(
 
 ) {
     companion object {
+        var contador = 0
         fun getAutoId(): Int {
-            val random = Random()
-            return random.nextInt(100)
+            contador= contador +1
+            return  contador
         }
     }
 
