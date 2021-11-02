@@ -56,6 +56,9 @@ class SQLiteHelper(context: Context) :
         contentValues.put(ID, std.id)
         contentValues.put(NAME, std.name)
         contentValues.put(EMAIL, std.email)
+        var tareas = ArrayList<TareaModel>()
+        tareas = getAllStudents()
+
 
         val success = db.insert(TBL_STUDENT, null, contentValues)
         db.close()
