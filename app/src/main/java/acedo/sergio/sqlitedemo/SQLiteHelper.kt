@@ -6,8 +6,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.core.content.contentValuesOf
-import androidx.core.database.getIntOrNull
 import java.lang.Exception
 
 
@@ -37,7 +35,7 @@ class SQLiteHelper(context: Context) :
 
     }
 
-    fun updateStudent(std: StudentModel): Int {
+    fun updateStudent(std: TareaModel): Int {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(ID, std.id)
@@ -52,7 +50,7 @@ class SQLiteHelper(context: Context) :
     }
 
 
-    fun insertStudent(std: StudentModel): Long {
+    fun insertStudent(std: TareaModel): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(ID, std.id)
@@ -65,9 +63,9 @@ class SQLiteHelper(context: Context) :
     }
 
     @SuppressLint("Range")
-    fun getAllStudents(): ArrayList<StudentModel> {
+    fun getAllStudents(): ArrayList<TareaModel> {
 
-        val stdList: ArrayList<StudentModel> = ArrayList()
+        val stdList: ArrayList<TareaModel> = ArrayList()
         val selectQuery = "SELECT * FROM $TBL_STUDENT"
         val db = this.readableDatabase
 
@@ -91,7 +89,7 @@ class SQLiteHelper(context: Context) :
                 name = cursor.getString(cursor.getColumnIndex("name"))
                 email = cursor.getString(cursor.getColumnIndex("email"))
 
-                val std = StudentModel(id = id, name = name, email = email)
+                val std = TareaModel(id = id, name = name, email = email)
                 stdList.add(std)
             } while (cursor.moveToNext())
         }

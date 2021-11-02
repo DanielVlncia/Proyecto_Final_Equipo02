@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.GridView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,9 +21,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var sqliteHelper: SQLiteHelper
     private lateinit var recyclerView: RecyclerView
-    private var adapter :  StudentAdapter? = null
+    private var adapter :  TareaAdapter? = null
 
-    private var std :  StudentModel? = null
+    private var std :  TareaModel? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         if (std== null) return
 
-        val std= StudentModel(id = std!!.id, name  = name , email = email)
+        val std= TareaModel(id = std!!.id, name  = name , email = email)
         val status = sqliteHelper.updateStudent(std)
 
         if (status > -1){
@@ -115,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         if(name.isEmpty() || email.isEmpty()){
             Toast.makeText(this,"Ingrese los datos necesarios", Toast.LENGTH_SHORT).show()
         }else{
-            val std = StudentModel(name = name, email =  email)
+            val std = TareaModel(name = name, email =  email)
             val status = sqliteHelper.insertStudent(std)
             //Check insert succes or not
             if(status >  -1){
@@ -139,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun InitRecyclerView(){
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = StudentAdapter()
+        adapter = TareaAdapter()
         recyclerView.adapter = adapter
     }
     private fun initView() {

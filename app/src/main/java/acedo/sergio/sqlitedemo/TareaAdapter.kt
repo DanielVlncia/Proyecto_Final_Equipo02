@@ -7,23 +7,23 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class StudentAdapter: RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
-    private var stdList:  ArrayList<StudentModel> = ArrayList()
-    private var onClickItem:((StudentModel) -> Unit)? =  null
-    private var onClickDeleteItem:((StudentModel) -> Unit)? =  null
+class TareaAdapter: RecyclerView.Adapter<TareaAdapter.StudentViewHolder>() {
+    private var stdList:  ArrayList<TareaModel> = ArrayList()
+    private var onClickItem:((TareaModel) -> Unit)? =  null
+    private var onClickDeleteItem:((TareaModel) -> Unit)? =  null
 
 
-    fun addItems(items:ArrayList<StudentModel>){
+    fun addItems(items:ArrayList<TareaModel>){
         this.stdList =  items
         notifyDataSetChanged()
     }
 
-    fun setOnClickItem(callback: (StudentModel)-> Unit){
+    fun setOnClickItem(callback: (TareaModel)-> Unit){
 
         this.onClickItem = callback
 
     }
-    fun setOnClickDeleteItem(callback: (StudentModel)-> Unit){
+    fun setOnClickDeleteItem(callback: (TareaModel)-> Unit){
 
         this.onClickDeleteItem = callback
 
@@ -54,7 +54,7 @@ class StudentAdapter: RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
         private var email = view.findViewById<TextView>(R.id.tvEmail)
          var btnDelete =  view.findViewById<Button>(R.id.btnDelete)
 
-        fun bindView(std : StudentModel){
+        fun bindView(std : TareaModel){
             id.text= std.id.toString()
             name.text=std.name
             email.text=std.email
