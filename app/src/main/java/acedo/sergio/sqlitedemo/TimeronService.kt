@@ -120,7 +120,6 @@ class TimeronService : AppCompatActivity() {
 
 
 
-
         if (std== null){
             Toast.makeText(this, "No se actualizo correctamente ", Toast.LENGTH_SHORT).show()
             return

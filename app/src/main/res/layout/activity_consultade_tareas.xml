@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConsultadeTareas">
+
+    <TextView
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Consultar Tareas"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:textSize="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+
+        <Button
+            android:layout_marginLeft="40dp"
+            android:id="@+id/btnConsultarTodas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Todas"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
+
+        <Button
+            android:textStyle="bold"
+            android:id="@+id/btnConsultarPendientes"
+            android:text="Pendientes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="10dp"
+            />
+
+        <Button
+            android:id="@+id/btnConsultarEnProgreso"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="En progeso"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnConsultarTerminadas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:text="Terminadas"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+
+    <TextView
+
+        android:textStyle="bold"
+        android:id="@+id/tvCambiable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tareas"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:textSize="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>
