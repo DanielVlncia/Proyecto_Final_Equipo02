@@ -11,7 +11,7 @@ class TareaAdapter: RecyclerView.Adapter<TareaAdapter.StudentViewHolder>() {
     private var stdList:  ArrayList<TareaModel> = ArrayList()
     private var onClickItem:((TareaModel) -> Unit)? =  null
     private var onClickDeleteItem:((TareaModel) -> Unit)? =  null
-
+    private var onClickStartItem:((TareaModel) -> Unit)? =  null
 
     fun addItems(items:ArrayList<TareaModel>){
         this.stdList =  items
@@ -29,16 +29,22 @@ class TareaAdapter: RecyclerView.Adapter<TareaAdapter.StudentViewHolder>() {
 
     }
 
+    fun setOnClickStartItem(callback: (TareaModel)-> Unit){
+
+        this.onClickStartItem = callback
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = StudentViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.card_items_std, parent, false)
+       LayoutInflater.from(parent.context).inflate(R.layout.card_layout_tarea, parent, false)
+
 
     )
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
         val std = stdList[position]
         holder.bindView(std)
         holder.itemView.setOnClickListener{ onClickItem?.invoke(std)}
-        holder.btnDelete.setOnClickListener{ onClickDeleteItem?.invoke( std)}
+
 
     }
 
@@ -52,12 +58,15 @@ class TareaAdapter: RecyclerView.Adapter<TareaAdapter.StudentViewHolder>() {
         private var id = view.findViewById<TextView>(R.id.tvId)
         private var name = view.findViewById<TextView>(R.id.tvName)
         private var email = view.findViewById<TextView>(R.id.tvEmail)
-         var btnDelete =  view.findViewById<Button>(R.id.btnDelete)
+        private var estado = view.findViewById<TextView>(R.id.tvEstado)
+        var btnDelete =  view.findViewById<Button>(R.id.btnDelete)
 
         fun bindView(std : TareaModel){
             id.text= std.id.toString()
             name.text=std.name
-            email.text=std.email
+            email.text=std.Descripcion
+            estado.text=std.estado
+
         }
     }
 

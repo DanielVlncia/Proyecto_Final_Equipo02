@@ -10,6 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SQLiteDemo">
         <activity
+            android:name=".ConsultadeTareas"
+            android:exported="true" />
+        <activity
+            android:name=".TimeronService"
+            android:exported="true"
+            android:label="@string/title_activity_timeron_service"
+            android:theme="@style/Theme.SQLiteDemo.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -18,6 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".TimerService" />
     </application>
 
 </manifest>

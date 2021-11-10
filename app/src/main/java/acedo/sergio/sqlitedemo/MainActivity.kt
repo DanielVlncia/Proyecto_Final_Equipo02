@@ -1,5 +1,8 @@
 package acedo.sergio.sqlitedemo
 
+import android.content.Context
+import android.content.Intent
+import android.os.Build.VERSION_CODES.O
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -7,8 +10,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.io.Serializable
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,8 +22,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var edEmail: EditText
     private lateinit var btnAdd: Button
     private lateinit var btnView: Button
-
-    private lateinit var btnUpdate: Button
 
     private lateinit var sqliteHelper: SQLiteHelper
     private lateinit var recyclerView: RecyclerView
@@ -33,22 +37,44 @@ class MainActivity : AppCompatActivity() {
         initView()
         InitRecyclerView()
         sqliteHelper = SQLiteHelper(this)
-
+       getStudents()
         btnAdd.setOnClickListener{ addStudent()}
-        btnView.setOnClickListener{ getStudents() }
-        btnUpdate.setOnClickListener{ UpdateStudent() }
-        adapter?.setOnClickItem { Toast.makeText(this, it.name, Toast.LENGTH_SHORT).show()
+        btnView.setOnClickListener{
+            var intent: Intent = Intent(this,ConsultadeTareas::class.java)
+           // getStudents()
+            startActivity(intent)
+            }
+
+        //Cuando se le presiona a la tarea
+        adapter?.setOnClickItem {
+
+            var intent: Intent = Intent(this,TimeronService::class.java)
+
 
         edName.setText(it.name)
-        edEmail.setText(it.email)
+        edEmail.setText(it.Descripcion)
         std = it
+            if(std!!.estado.equals("Pendiente")){
+                std?.estado = "En progreso"
+                sqliteHelper.updateStudent(std!!)
+            }
+            intent.putExtra("Tarea", std as Serializable)
+            startActivity(intent)
         }
 
         adapter?.setOnClickDeleteItem {
             deleteStudent(it.id)
         }
+
+        adapter?.setOnClickStartItem {
+
+
         }
 
+
+
+        }
+    var context: Context? = null
     private fun deleteStudent(id: Int) {
         if(id==null) return
 
@@ -78,14 +104,14 @@ class MainActivity : AppCompatActivity() {
         val email = edEmail.text.toString()
 
 
-        if(name == std?.name  &&  email == std?.email){
+        if(name == std?.name  &&  email == std?.Descripcion){
             Toast.makeText(this, "Tarea no actualizado", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (std== null) return
 
-        val std= TareaModel(id = std!!.id, name  = name , email = email)
+        val std= TareaModel(id = std!!.id, name  = name , Descripcion = email)
         val status = sqliteHelper.updateStudent(std)
 
         if (status > -1){
@@ -108,22 +134,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun addStudent() {
         val name = edName.text.toString()
-
         val email = edEmail.text.toString()
+
+        val std :ArrayList<TareaModel> = sqliteHelper.getAllStudents()
+        for (Tarea in std){
+            if(Tarea.name.equals(name,true)){
+                Toast.makeText(this,"Esta tarea ya esta registrada", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
 
         if(name.isEmpty() || email.isEmpty()){
             Toast.makeText(this,"Ingrese los datos necesarios", Toast.LENGTH_SHORT).show()
         }else{
-            val std = TareaModel(name = name, email =  email)
+            val std = TareaModel(name = name, Descripcion =  email)
             val status = sqliteHelper.insertStudent(std)
             //Check insert succes or not
             if(status >  -1){
+
                 Toast.makeText(this,"Tarea anadida", Toast.LENGTH_SHORT).show()
                 clearEditText()
                 getStudents()
 
 
             }else{
+
                 Toast.makeText(this,"Tarea no anadida", Toast.LENGTH_SHORT).show()
             }
         }
@@ -140,16 +175,50 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = TareaAdapter()
         recyclerView.adapter = adapter
+
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView )
+
+
     }
+    val simpleCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.RIGHT
+    or ItemTouchHelper.END , O){
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+          val fromPosition = viewHolder.adapterPosition//start position
+          val toPosition = target.adapterPosition // end position
+            val stdList   = sqliteHelper.getAllStudents()
+            Collections.swap(stdList,fromPosition, toPosition)
+            adapter?.notifyItemMoved(fromPosition,toPosition)
+
+            return false
+
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int ) {
+        val position = viewHolder.adapterPosition
+        val stdList   = sqliteHelper.getAllStudents()
+
+
+
+        }
+
+    }
+
     private fun initView() {
         edName = findViewById<EditText>(R.id.edName)
         edEmail = findViewById<EditText>(R.id.edEmail)
         btnAdd = findViewById<Button>(R.id.btnAdd)
-        btnUpdate = findViewById<Button>(R.id.btnUpdate)
         btnView = findViewById<Button>(R.id.btnView)
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
     }
 }
+
+
 
 
 

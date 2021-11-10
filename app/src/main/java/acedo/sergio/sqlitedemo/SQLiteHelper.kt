@@ -13,24 +13,25 @@ class SQLiteHelper(context: Context) :
     SQLiteOpenHelper(context, DATEBASE_NAME, null, DATASE_VERSION) {
     companion object {
         private const val DATASE_VERSION = 1
-        private const val DATEBASE_NAME = "student.db"
+        private const val DATEBASE_NAME = "tarea.db"
 
-        private const val TBL_STUDENT = "tbl_student"
+        private const val TAREAS_POMODORO = "tbl_pomodoro"
         private const val ID = "id"
         private const val NAME = "name"
-        private const val EMAIL = "email"
+        private const val ESTADO = "estado"
+        private const val DESCRIPCION = "email"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTblStudent = ("CREATE TABLE " + TBL_STUDENT + "("
-                + ID + " INTEGER PRIMARY KEY," + NAME + " TEXT,"
-                + EMAIL + " TEXT" + ")")
+        val createTblStudent = ("CREATE TABLE " + TAREAS_POMODORO + "("
+                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + NAME + " TEXT,"
+                + DESCRIPCION + " TEXT," + ESTADO + " TEXT" + ")")
 
         db?.execSQL(createTblStudent)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
-        db!!.execSQL("DROP TABLE IF EXISTS $TBL_STUDENT")
+        db!!.execSQL("DROP TABLE IF EXISTS $TAREAS_POMODORO")
         onCreate(db)
 
     }
@@ -38,12 +39,12 @@ class SQLiteHelper(context: Context) :
     fun updateStudent(std: TareaModel): Int {
         val db = this.writableDatabase
         val contentValues = ContentValues()
-        contentValues.put(ID, std.id)
         contentValues.put(NAME, std.name)
-        contentValues.put(EMAIL, std.email)
+        contentValues.put(DESCRIPCION, std.Descripcion)
+        contentValues.put(ESTADO, std.estado)
 
 
-        val succes = db.update(TBL_STUDENT, contentValues, "id=" + std.id, null)
+        val succes = db.update(TAREAS_POMODORO, contentValues, "id=" + std.id, null)
         db.close()
 
         return succes
@@ -53,14 +54,14 @@ class SQLiteHelper(context: Context) :
     fun insertStudent(std: TareaModel): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues()
-        contentValues.put(ID, std.id)
         contentValues.put(NAME, std.name)
-        contentValues.put(EMAIL, std.email)
+        contentValues.put(DESCRIPCION, std.Descripcion)
+        contentValues.put(ESTADO, std.estado)
         var tareas = ArrayList<TareaModel>()
         tareas = getAllStudents()
 
 
-        val success = db.insert(TBL_STUDENT, null, contentValues)
+        val success = db.insert(TAREAS_POMODORO, null, contentValues)
         db.close()
         return success
     }
@@ -69,7 +70,7 @@ class SQLiteHelper(context: Context) :
     fun getAllStudents(): ArrayList<TareaModel> {
 
         val stdList: ArrayList<TareaModel> = ArrayList()
-        val selectQuery = "SELECT * FROM $TBL_STUDENT"
+        val selectQuery = "SELECT * FROM $TAREAS_POMODORO"
         val db = this.readableDatabase
 
         val cursor: Cursor?
@@ -84,15 +85,17 @@ class SQLiteHelper(context: Context) :
 
         var id: Int
         var name: String
-        var email: String
+        var Descripcion: String
+        var estado :String
 
         if (cursor.moveToFirst()) {
             do {
                 id = cursor.getInt(cursor.getColumnIndex("id"))
                 name = cursor.getString(cursor.getColumnIndex("name"))
-                email = cursor.getString(cursor.getColumnIndex("email"))
+                Descripcion = cursor.getString(cursor.getColumnIndex("email"))
+                estado = cursor.getString(cursor.getColumnIndex("estado"))
 
-                val std = TareaModel(id = id, name = name, email = email)
+                val std = TareaModel(id = id, name = name, Descripcion = Descripcion, estado = estado)
                 stdList.add(std)
             } while (cursor.moveToNext())
         }
@@ -106,7 +109,7 @@ class SQLiteHelper(context: Context) :
 
         contentValues.put(ID, id)
 
-        val succes = db.delete(TBL_STUDENT, "id=" + id, null)
+        val succes = db.delete(TAREAS_POMODORO, "id=" + id, null)
         db.close()
         return succes
     }
