@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +34,23 @@ class ConsultadeTareas : AppCompatActivity() {
         sqliteHelper = SQLiteHelper(this)
         initView()
         InitRecyclerView()
-        getStudents()
+        try {
+
+            var Valor:String = intent.extras?.get("progreso") as String
+            if (Valor == "progreso"){
+
+              //  Toast.makeText(this,"Funciono",Toast.LENGTH_SHORT).show()
+                this.getTareasEnProgreso()
+            }else{
+                getStudents()
+            }
+        }catch (e: Exception){
+            getStudents()
+           // Toast.makeText(this,"Trono",Toast.LENGTH_SHORT).show()
+        }
+
+
+
         btnConsultarTodas.setOnClickListener{
             getStudents()
         }
@@ -55,7 +72,7 @@ class ConsultadeTareas : AppCompatActivity() {
             std = it
             if(std!!.estado.equals("Pendiente")){
                 std?.estado = "En progreso"
-                sqliteHelper.updateStudent(std!!)
+                sqliteHelper.updateTarea(std!!)
             }
             intent.putExtra("Tarea", std as Serializable)
             startActivity(intent)
@@ -64,8 +81,8 @@ class ConsultadeTareas : AppCompatActivity() {
 
     private fun getStudents() {
         val stdList   = sqliteHelper.getAllStudents()
-        Log.e("pppp" , "${stdList.size}")
-
+        Log.e("pppp" , "${stdList}")
+        stdList.sort()
         adapter?.addItems(stdList)
     }
     private fun getTareasPendientes(){
@@ -77,6 +94,7 @@ class ConsultadeTareas : AppCompatActivity() {
                 Log.e("pppp" , "${std.size}")
             }
         }
+        std.sort()
         adapter?.addItems(std)
     }
 
@@ -89,6 +107,7 @@ class ConsultadeTareas : AppCompatActivity() {
                 Log.e("pppp" , "${std.size}")
             }
         }
+        std.sort()
         adapter?.addItems(std)
     }
     private fun getTareasEnProgreso(){
@@ -100,6 +119,7 @@ class ConsultadeTareas : AppCompatActivity() {
                 Log.e("pppp" , "${std.size}")
             }
         }
+        std.sort()
         adapter?.addItems(std)
     }
     val simpleCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.RIGHT
@@ -114,7 +134,23 @@ class ConsultadeTareas : AppCompatActivity() {
             val fromPosition = viewHolder.adapterPosition//start position
             val toPosition = target.adapterPosition // end position
             val stdList   = sqliteHelper.getAllStudents()
+            Log.e("Lista Original" , "${stdList}")
             Collections.swap(stdList,fromPosition, toPosition)
+            Log.e("Lista Cambiada" , "${stdList}")
+            for (tarea in stdList){
+                tarea.posicion = stdList.indexOf(tarea)
+                sqliteHelper.updateTarea(tarea)
+            }
+
+        //   val from = stdList[fromPosition]
+        //   val to = stdList[toPosition]
+        //
+        //
+        //   from.posicion = fromPosition
+        //   to.posicion = toPosition
+        //   sqliteHelper.updateTarea(from)
+        //   sqliteHelper.updateTarea(to)
+        //
             adapter?.notifyItemMoved(fromPosition,toPosition)
 
             return false

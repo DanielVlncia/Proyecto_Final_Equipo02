@@ -38,30 +38,39 @@
             android:id="@+id/StartButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Empezar"
             android:backgroundTint="#399B9E"
+            android:text="Empezar"
+            android:textAllCaps="false"
             app:icon="@drawable/ic_baseline_play_arrow_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/resetButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textAllCaps="false"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/resetButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancelar"
             android:backgroundTint="#399B9E"
-            app:icon="@drawable/ic_baseline_cancel_24"
+            android:text="Restablecer"
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_baseline_replay_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/StartButton"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textAllCaps="false"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancelButton"
+        app:icon="@drawable/ic_baseline_cancel_24"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:backgroundTint="#399B9E"
+    android:textAllCaps="false"
+    android:text="Cancelar"
+    />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -106,10 +115,10 @@
 
             android:textAlignment="center"/>
         <CheckBox
-            android:id="@+id/cbProgreso"
+            android:id="@+id/cbPendiente"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="En progreso">
+            android:text="Pendiente">
 
         </CheckBox>
         <CheckBox

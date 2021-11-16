@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +31,11 @@ class MainActivity : AppCompatActivity() {
     private var std :  TareaModel? = null
 
 
+    companion object{
+        var TareasList:ArrayList<TareaModel> = ArrayList<TareaModel>()
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,8 +43,10 @@ class MainActivity : AppCompatActivity() {
         initView()
         InitRecyclerView()
         sqliteHelper = SQLiteHelper(this)
+        TareasLists()
+
        getStudents()
-        btnAdd.setOnClickListener{ addStudent()}
+        btnAdd.setOnClickListener{ addTarea()}
         btnView.setOnClickListener{
             var intent: Intent = Intent(this,ConsultadeTareas::class.java)
            // getStudents()
@@ -56,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         std = it
             if(std!!.estado.equals("Pendiente")){
                 std?.estado = "En progreso"
-                sqliteHelper.updateStudent(std!!)
+                sqliteHelper.updateTarea(std!!)
             }
             intent.putExtra("Tarea", std as Serializable)
             startActivity(intent)
@@ -74,6 +82,12 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+
+    private fun TareasLists() {
+        TareasList = sqliteHelper.getAllStudents()
+        TareasList.sort()
+    }
+
     var context: Context? = null
     private fun deleteStudent(id: Int) {
         if(id==null) return
@@ -112,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         if (std== null) return
 
         val std= TareaModel(id = std!!.id, name  = name , Descripcion = email)
-        val status = sqliteHelper.updateStudent(std)
+        val status = sqliteHelper.updateTarea(std)
 
         if (status > -1){
             clearEditText()
@@ -124,21 +138,30 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun getStudents() {
-        val stdList   = sqliteHelper.getAllStudents()
-        Log.e("pppp" , "${stdList.size}")
+        val stdList   = sqliteHelper.getAllStudents() // Todos los estudiantes
+        Log.e("Lista" , "${stdList}" )
+        var std :ArrayList<TareaModel> = ArrayList() //  lista auxiliar
+        for (Tarea in stdList){
 
-        adapter?.addItems(stdList)
+            if(Tarea.estado.equals("Pendiente")){
+
+                std.add(Tarea)
+
+            }
+        }
+        std.sort()
+        adapter?.addItems(std)
     }
 
 
 
-    private fun addStudent() {
+    private fun addTarea() {
         val name = edName.text.toString()
         val email = edEmail.text.toString()
 
         val std :ArrayList<TareaModel> = sqliteHelper.getAllStudents()
         for (Tarea in std){
-            if(Tarea.name.equals(name,true)){
+            if(Tarea.name.equals(name,true)  || Tarea.Descripcion.equals(email,true) ){
                 Toast.makeText(this,"Esta tarea ya esta registrada", Toast.LENGTH_SHORT).show()
                 return
             }
@@ -149,14 +172,21 @@ class MainActivity : AppCompatActivity() {
         }else{
             val std = TareaModel(name = name, Descripcion =  email)
             val status = sqliteHelper.insertStudent(std)
+
             //Check insert succes or not
             if(status >  -1){
+             //   Toast.makeText(this,"Tarea anadida", Toast.LENGTH_SHORT).show()
+              // Log.e("Que tal" , "${std.id}")
+                //Log.e("Que tal" , "${std.posicion}"
 
-                Toast.makeText(this,"Tarea anadida", Toast.LENGTH_SHORT).show()
+                 var tarea = sqliteHelper.getStudentbyName(std.name)
+                tarea.posicion = tarea.id
+                sqliteHelper.updateTarea(tarea)
+                std
+                Log.e("Que tal" , "${tarea}")
                 clearEditText()
                 getStudents()
-
-
+                TareasList = sqliteHelper.getAllStudents()
             }else{
 
                 Toast.makeText(this,"Tarea no anadida", Toast.LENGTH_SHORT).show()
@@ -191,10 +221,19 @@ class MainActivity : AppCompatActivity() {
         ): Boolean {
           val fromPosition = viewHolder.adapterPosition//start position
           val toPosition = target.adapterPosition // end position
-            val stdList   = sqliteHelper.getAllStudents()
-            Collections.swap(stdList,fromPosition, toPosition)
-            adapter?.notifyItemMoved(fromPosition,toPosition)
+            val stdList   = TareasList
+            //var std :ArrayList<TareaModel> = ArrayList() //  lista auxiliar
 
+            Log.e("Lista Original" , "${stdList}")
+            Collections.swap(stdList,fromPosition, toPosition)
+            Log.e("Lista Cambiada" , "${stdList}")
+            for (tarea in stdList){
+                tarea.posicion = stdList.indexOf(tarea)
+                sqliteHelper.updateTarea(tarea)
+            }
+
+
+             adapter?.notifyItemMoved(fromPosition,toPosition)
             return false
 
         }

@@ -20,12 +20,13 @@ class SQLiteHelper(context: Context) :
         private const val NAME = "name"
         private const val ESTADO = "estado"
         private const val DESCRIPCION = "email"
+        private const val POSICION = "posicion"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createTblStudent = ("CREATE TABLE " + TAREAS_POMODORO + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + NAME + " TEXT,"
-                + DESCRIPCION + " TEXT," + ESTADO + " TEXT" + ")")
+                + DESCRIPCION + " TEXT," + ESTADO + " INTEGER," + POSICION+ ")")
 
         db?.execSQL(createTblStudent)
     }
@@ -36,13 +37,13 @@ class SQLiteHelper(context: Context) :
 
     }
 
-    fun updateStudent(std: TareaModel): Int {
+    fun updateTarea(std: TareaModel): Int {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(NAME, std.name)
         contentValues.put(DESCRIPCION, std.Descripcion)
         contentValues.put(ESTADO, std.estado)
-
+        contentValues.put(POSICION, std.posicion)
 
         val succes = db.update(TAREAS_POMODORO, contentValues, "id=" + std.id, null)
         db.close()
@@ -87,6 +88,7 @@ class SQLiteHelper(context: Context) :
         var name: String
         var Descripcion: String
         var estado :String
+        var posicion :Int
 
         if (cursor.moveToFirst()) {
             do {
@@ -94,14 +96,25 @@ class SQLiteHelper(context: Context) :
                 name = cursor.getString(cursor.getColumnIndex("name"))
                 Descripcion = cursor.getString(cursor.getColumnIndex("email"))
                 estado = cursor.getString(cursor.getColumnIndex("estado"))
+                posicion = cursor.getInt(cursor.getColumnIndex("posicion"))
 
-                val std = TareaModel(id = id, name = name, Descripcion = Descripcion, estado = estado)
+
+                val std = TareaModel(id = id, name = name, Descripcion = Descripcion, estado = estado,posicion = posicion)
                 stdList.add(std)
             } while (cursor.moveToNext())
         }
         return stdList
     }
 
+    fun getStudentbyName(Name: String): TareaModel {
+      val Tareas =  this.getAllStudents()
+        for (tarea in Tareas){
+            if (tarea.name.equals(Name)){
+                return tarea
+            }
+        }
+       return null!!
+    }
 
     fun deleteStudentbyId(id: Int): Int {
         val db = this.writableDatabase

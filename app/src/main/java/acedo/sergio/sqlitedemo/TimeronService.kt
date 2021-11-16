@@ -6,13 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
-import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
-import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -48,15 +45,15 @@ class TimeronService : AppCompatActivity() {
             binding.cbTerminada.setOnCheckedChangeListener { buttonView, isChecked ->
 
                     if (isChecked){
-                        binding.cbProgreso.isChecked = false
+                        binding.cbPendiente.isChecked = false
                         std.estado = "Terminada"
                     }
                 }
-            binding.cbProgreso.setOnCheckedChangeListener { buttonView, isChecked ->
+            binding.cbPendiente.setOnCheckedChangeListener { buttonView, isChecked ->
 
                 if (isChecked){
                     binding.cbTerminada.isChecked = false
-                    std.estado = "En progreso"
+                    std.estado = "Pendiente"
                 }
             }
 
@@ -72,7 +69,7 @@ class TimeronService : AppCompatActivity() {
         
         binding.btnUpdate.setOnClickListener{ Updatestd(std) }
         binding.btnDelete.setOnClickListener{  Deletestd(std) }
-
+        binding.cancelButton.setOnClickListener{   Cancel() }
         binding.StartButton.setOnClickListener{
             startStopTimer()
         }
@@ -85,6 +82,7 @@ class TimeronService : AppCompatActivity() {
         registerReceiver(updateTime, IntentFilter(TimerService.TIMER_UPDATE))
 
     }
+
 
     private fun Deletestd(std: TareaModel) {
         val id = std.id
@@ -120,30 +118,61 @@ class TimeronService : AppCompatActivity() {
 
 
 
-        if (std== null){
-            Toast.makeText(this, "No se actualizo correctamente ", Toast.LENGTH_SHORT).show()
-            return
-        }
+        if (std== null) return
 
-        val std= TareaModel(id = std!!.id, name  = name , Descripcion = descripcion,estado = estadp)
-        val status = sqliteHelper.updateStudent(std)
 
-        if (status > -1){
+       // Log.e("Que tal" , "${Confirmacion}")
+        if(estadp.equals("Terminada")){
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Seguro que desea marcar como terminada esta Tarea?")
+            builder.setCancelable(true)
+            builder.setPositiveButton("Si"){dialog, _ ->
+                val std= TareaModel(id = std!!.id, name  = name , Descripcion = descripcion,estado = estadp)
 
-            binding.TVnombreTarea.setText(std.name)
-            binding.TvDescripcion.setText(std.Descripcion)
-            changeColorTV(std)
-            binding.tvEstado.setText(std.estado)
+                val status = sqliteHelper.updateTarea(std)
 
-            Toast.makeText(this, "Se actualizo correctamente ", Toast.LENGTH_SHORT).show()
+                if (status > -1){
+
+                    binding.TVnombreTarea.setText(std.name)
+                    binding.TvDescripcion.setText(std.Descripcion)
+                    changeColorTV(std)
+                    binding.tvEstado.setText(std.estado)
+
+                    Toast.makeText(this, "Se marco como terminada correctamente", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(this, "No se actualizo correctamente ", Toast.LENGTH_SHORT).show()
+                }
+                dialog.dismiss()
+            }
+            builder.setNegativeButton("No"){dialog, _ ->
+
+                dialog.dismiss()
+            }
+
+            val alert = builder.create()
+            alert.show()
         }else{
-            Toast.makeText(this, "No se actualizo correctamente ", Toast.LENGTH_SHORT).show()
-        }
+            val std= TareaModel(id = std!!.id, name  = name , Descripcion = descripcion,estado = estadp)
 
+            val status = sqliteHelper.updateTarea(std)
+
+            if (status > -1){
+
+                binding.TVnombreTarea.setText(std.name)
+                binding.TvDescripcion.setText(std.Descripcion)
+                changeColorTV(std)
+                binding.tvEstado.setText(std.estado)
+
+                Toast.makeText(this, "Se marco como pendiente correctamente", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(this, "No se actualizo correctamente ", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 
 
     }
+
 
     private fun changeColorTV(std: TareaModel) {
         if (std.estado == "En espera"){
@@ -159,12 +188,47 @@ class TimeronService : AppCompatActivity() {
     }
 
     private fun resetTimer() {
-        stopTimer()
-        time = 0.0
-        binding.timeTV.text = getTimeStringFromDouble(time)
-        var intent: Intent = Intent(this,ConsultadeTareas::class.java)
-        startActivity(intent)
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Seguro que desea restablecer el temporizador?")
+        builder.setCancelable(true)
+        builder.setPositiveButton("Si"){dialog, _ ->
+            stopTimer()
+            time = 0.0
+            binding.timeTV.text = getTimeStringFromDouble(time)
+
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("No"){dialog, _ ->
+
+            dialog.dismiss()
+        }
+        val alert = builder.create()
+        alert.show()
+
+
     }
+    private fun Cancel() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Seguro que desea cancelar esta tarea")
+        builder.setCancelable(true)
+        builder.setPositiveButton("Si"){dialog, _ ->
+            stopTimer()
+            time = 0.0
+            binding.timeTV.text = getTimeStringFromDouble(time)
+            var intent: Intent = Intent(this,ConsultadeTareas::class.java)
+            intent.putExtra("progreso","progreso")
+            startActivity(intent)
+
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("No"){dialog, _ ->
+
+            dialog.dismiss()
+        }
+        val alert = builder.create()
+        alert.show()
+    }
+
 
     private fun startStopTimer() {
        if (timerStarted){
@@ -177,16 +241,17 @@ class TimeronService : AppCompatActivity() {
     private fun startTimer() {
         serviceIntent.putExtra(TimerService.TIME_EXTRA,time)
         startService(serviceIntent)
-        binding.StartButton.text= "Detener"
+        binding.StartButton.text= "Pausar"
         binding.StartButton.icon = getDrawable(R.drawable.ic_baseline_pause_24)
         timerStarted = true
     }
 
     private fun stopTimer() {
         stopService(serviceIntent)
-        binding.StartButton.text= "Empezar"
+        binding.StartButton.text = "Empezar"
         binding.StartButton.icon = getDrawable(R.drawable.ic_baseline_play_arrow_24)
         timerStarted = false
+        Toast.makeText(this, "Se detuvo el temporizador", Toast.LENGTH_SHORT).show()
     }
 
     private val updateTime:BroadcastReceiver= object : BroadcastReceiver(){
@@ -221,6 +286,7 @@ class TimeronService : AppCompatActivity() {
             window.contentView = view
             val imageView = view.findViewById<ImageView>(R.id.imgImage)
             imageView.setOnClickListener{
+                this.startTimer()
                 window.dismiss()
             }
             window.showAsDropDown(binding.TvDescripcion)
