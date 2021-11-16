@@ -20,38 +20,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center">
 
 
         <Button
-            android:layout_marginLeft="40dp"
             android:id="@+id/btnConsultarTodas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Todas"
-            android:textStyle="bold"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textStyle="bold" />
 
         <Button
-            android:textStyle="bold"
             android:id="@+id/btnConsultarPendientes"
-            android:text="Pendientes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAllCaps="false"
             android:layout_marginLeft="10dp"
             android:paddingLeft="10dp"
-            />
+            android:text="Pendientes"
+            android:textAllCaps="false"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnConsultarEnProgreso"
-            android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginLeft="10dp"
             android:text="En progeso"
-            android:textStyle="bold"
-            android:textAllCaps="false" />
-
+            android:textAllCaps="false"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -61,9 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:gravity="center"
+        android:layout_marginRight="19dp"
         android:text="Terminadas"
         android:textAllCaps="false"
         android:textStyle="bold" />
