@@ -6,36 +6,86 @@
     android:layout_gravity="center"
     android:background="@drawable/circlebackground"
     android:gravity="center"    >
-    
+
     <ImageView
         android:id="@+id/imgImage"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_baseline_hotel_24"
-        android:layout_marginTop="18dp"/>
+        android:layout_marginTop="18dp"
+        android:src="@drawable/ic_baseline_hotel_24" />
 
     <TextView
-        android:id="@+id/userNameTV"
+        android:id="@+id/pomodoroTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/imgImage"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="5dp"
         android:text="Primer Pomodoro alcanzado" />
+
     <TextView
         android:id="@+id/descripcionTvPopup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Descansa que ya chambeaste tus 25 minutasos"
-        android:textSize="20sp"
-        android:layout_below="@id/userNameTV"
+        android:layout_below="@id/pomodoroTv"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:gravity="center"
-        android:layout_marginRight="22dp"
         android:layout_marginLeft="22dp"
-        />
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="22dp"
+        android:gravity="center"
+        android:text="Descansa que ya chambeaste tus 25 minutasos"
+        android:textSize="20sp" />
+
+
+    <Button
+        android:id="@+id/btnContinuar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#399B9E"
+        android:layout_below="@id/descripcionTvPopup"
+        android:layout_centerHorizontal="true"
+        android:text="Continuar Contador"
+        android:textAllCaps="false">
+
+    </Button>
+
+    <Button
+        android:id="@+id/btnReiniciar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/descripcionTvPopup"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#399B9E"
+        android:text="Reiniciar Tecnica"
+        android:textAllCaps="false"
+        android:visibility="invisible">
+
+    </Button>
+
+    <Button
+        android:id="@+id/btnOmitirPomodoro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnContinuar"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#399B9E"
+        android:gravity="center"
+        android:text="Omitir siguiente Pomodoro"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btnCancelar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnContinuar"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#399B9E"
+        android:gravity="center"
+        android:text="Cancelar Tarea"
+        android:visibility="invisible"
+        android:textAllCaps="false" />
+
     
 
 </RelativeLayout>

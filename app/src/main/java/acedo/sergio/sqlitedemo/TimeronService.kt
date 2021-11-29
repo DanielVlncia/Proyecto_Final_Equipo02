@@ -9,11 +9,11 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
-import android.widget.PopupWindow
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import java.lang.Exception
+import java.util.*
 import kotlin.math.roundToInt
 
 class TimeronService : AppCompatActivity() {
@@ -36,9 +36,11 @@ class TimeronService : AppCompatActivity() {
 
         //Asignar los nombres editables
         try {
+            binding.TVPomodorosRestantes.setText("4")
             binding.TVnombreTarea.setText(std.name)
             binding.TvDescripcion.setText(std.Descripcion)
 
+        VerificarEstado("Terminada", std)
 
             ///checked boxes
 
@@ -83,6 +85,18 @@ class TimeronService : AppCompatActivity() {
 
     }
 
+    private fun VerificarEstado(s: String ,std: TareaModel) {
+        if(std.estado.equals("Terminada")){
+            binding.tvTimeTerminado.visibility = View.VISIBLE
+            binding.tvTime.visibility = View.VISIBLE
+            val std2= sqliteHelper.getTareabyId(std.id)
+            binding.tvTime.setText(std2.fechaTerminada +" "+std2.horaTerminada)
+        }else{
+            binding.tvTime.visibility = View.INVISIBLE
+            binding.tvTimeTerminado.visibility = View.INVISIBLE
+        }
+    }
+
 
     private fun Deletestd(std: TareaModel) {
         val id = std.id
@@ -111,10 +125,28 @@ class TimeronService : AppCompatActivity() {
 
 
     private fun Updatestd(std:TareaModel) {
-        
+
+        val std3 :ArrayList<TareaModel> = sqliteHelper.getAllStudents()
+
+        val etName  = findViewById<EditText>(R.id.TVnombreTarea)
+        val etDescripcion = findViewById<EditText>(R.id.TvDescripcion)
+
+        for (Tarea in std3){
+            if(Tarea.name.equals(etName.text.toString(),true)  || Tarea.Descripcion.equals(etDescripcion.text.toString(),true) ){
+                Toast.makeText(this,"Esta tarea ya esta registrada", Toast.LENGTH_SHORT).show()
+                return
+            }else{
+                Log.e("Fecha" , "${etName.text.toString()   }")
+                Log.e("Fecha" , "${Tarea.name}")
+            }
+        }
+
+
         val name = binding.TVnombreTarea.text.toString()
         val descripcion = binding.TvDescripcion.text.toString()
         val estadp = std.estado
+        var fecha = ""
+        var hora = ""
 
 
 
@@ -127,16 +159,31 @@ class TimeronService : AppCompatActivity() {
             builder.setMessage("Seguro que desea marcar como terminada esta Tarea?")
             builder.setCancelable(true)
             builder.setPositiveButton("Si"){dialog, _ ->
-                val std= TareaModel(id = std!!.id, name  = name , Descripcion = descripcion,estado = estadp)
+
+                val  cal = Calendar.getInstance()
+                fecha = MainActivity.fechaf.format(cal.time)
+                hora = MainActivity.horaf.format(cal.time)
+
+                Log.e("Fecha" , "${fecha}")
+
+                Log.e("Hora" , "${hora}")
+
+                val std= TareaModel(id = std!!.id, name  = name , Descripcion = descripcion,estado = estadp,fechaTerminada = fecha,horaTerminada = hora)
 
                 val status = sqliteHelper.updateTarea(std)
 
                 if (status > -1){
 
+
+
+
+
                     binding.TVnombreTarea.setText(std.name)
                     binding.TvDescripcion.setText(std.Descripcion)
                     changeColorTV(std)
                     binding.tvEstado.setText(std.estado)
+                    binding.tvTime.setText(std.fechaTerminada + " " + std.horaTerminada)
+                    VerificarEstado("Terminada",std)
 
                     Toast.makeText(this, "Se marco como terminada correctamente", Toast.LENGTH_SHORT).show()
                 }else{
@@ -162,8 +209,8 @@ class TimeronService : AppCompatActivity() {
                 binding.TvDescripcion.setText(std.Descripcion)
                 changeColorTV(std)
                 binding.tvEstado.setText(std.estado)
-
-                Toast.makeText(this, "Se marco como pendiente correctamente", Toast.LENGTH_SHORT).show()
+                VerificarEstado("Terminada",std)
+                Toast.makeText(this, "Se actualizo correctamente", Toast.LENGTH_SHORT).show()
             }else{
                 Toast.makeText(this, "No se actualizo correctamente ", Toast.LENGTH_SHORT).show()
             }
@@ -194,6 +241,7 @@ class TimeronService : AppCompatActivity() {
         builder.setPositiveButton("Si"){dialog, _ ->
             stopTimer()
             time = 0.0
+            binding.TVPomodorosRestantes.setText("4")
             binding.timeTV.text = getTimeStringFromDouble(time)
 
             dialog.dismiss()
@@ -278,22 +326,86 @@ class TimeronService : AppCompatActivity() {
         return makeTimeString(hours,minutes,seconds)
     }
 
+private var Omitir :Int = -1
     private fun pomodoro(min: Int) {
 
-        if(min == 5) {
+        var numero =  min
+        var multiplo = 5
+        var numPomodorosRestantes: Int = Integer.parseInt(binding.TVPomodorosRestantes.text.toString())
+
+        if(numero % multiplo == 0 && numero > 0 ) {
+
+
+            var rwq =  1
+            numPomodorosRestantes = numPomodorosRestantes -1
+            if(numPomodorosRestantes == 3){
+                 rwq =  1
+            }else if(numPomodorosRestantes == 2){
+                 rwq =  2
+            }else if(numPomodorosRestantes == 1){
+                 rwq =  3
+            }else if(numPomodorosRestantes == 0){
+                 rwq =  4
+
+            }
+
+
+
+            binding.TVPomodorosRestantes.setText(numPomodorosRestantes.toString())
+            Log.e("numPomodorosRestantes" , "${numPomodorosRestantes}")
             val window = PopupWindow(this)
             val view = layoutInflater.inflate(R.layout.popup,null)
             window.contentView = view
-            val imageView = view.findViewById<ImageView>(R.id.imgImage)
-            imageView.setOnClickListener{
+            val Boton = view.findViewById<Button>(R.id.btnContinuar)
+            val btnReiniciar = view.findViewById<Button>(R.id.btnReiniciar)
+
+            val btnCancelar = view.findViewById<Button>(R.id.btnCancelar)
+            val BotonOmitirSigueintePomodoro = view.findViewById<Button>(R.id.btnOmitirPomodoro)
+            if(rwq == 4){
+                view.findViewById<TextView>(R.id.descripcionTvPopup).setText("Se alcanzo el ultimo pomodoro desea repetir la tecnica pomodoro?")
+                Boton.visibility = View.INVISIBLE
+                BotonOmitirSigueintePomodoro.visibility = View.INVISIBLE
+                btnReiniciar.visibility = View.VISIBLE
+                btnCancelar.visibility = View.VISIBLE
+            }else {
+                view.findViewById<TextView>(R.id.pomodoroTv).setText("$rwq pomodoro alcanzado")
+            }
+            btnReiniciar.setOnClickListener {
+                this.resetTimer()
+                window.dismiss()
+            }
+            btnCancelar.setOnClickListener {
+                this.Cancel()
+            }
+            Boton.setOnClickListener{
                 this.startTimer()
                 window.dismiss()
             }
+            BotonOmitirSigueintePomodoro.setOnClickListener {
+
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("Seguro que desea omitir este descanso?")
+                builder.setCancelable(true)
+                builder.setPositiveButton("Si"){dialog, _ ->
+                    this.startTimer()
+                    window.dismiss()
+                    dialog.dismiss()
+                }
+                builder.setNegativeButton("No"){dialog, _ ->
+
+                    dialog.dismiss()
+                }
+                val alert = builder.create()
+                alert.show()
+            }
+
             window.showAsDropDown(binding.TvDescripcion)
             stopTimer()
             //  val intent: Intent = Intent(this,MainActivity::class.java)
             //   startActivity(intent)
+
         }
+
     }
 
 

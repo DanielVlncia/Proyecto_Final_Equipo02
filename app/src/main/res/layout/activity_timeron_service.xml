@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tarea"
+        android:maxLength="100"
         android:padding="10dp"
         android:textColor="@color/black"
         android:textSize="30sp"
@@ -61,6 +62,45 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/tvNumPomodorosFaltantes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#399B9E"
+            android:text="Pomodoros restantes: "
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_baseline_play_arrow_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/TVPomodorosRestantes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/TVPomodorosRestantes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#399B9E"
+            android:text="# De descansos"
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_baseline_replay_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.764"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.8" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/cancelButton"
         app:icon="@drawable/ic_baseline_cancel_24"
@@ -77,31 +117,32 @@
         android:orientation="vertical"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="0dp">
 
         <TextView
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Descripción"
             android:padding="10dp"
+            android:text="Descripción"
+            android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:textAlignment="center"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/TvDescripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:padding="10dp"
-            android:text="Doña Uzeada de Ribera Maldonado de Bracamonte y Anaya era baja, rechoncha, abigotada. Ya no existia razon para llamar talle al suyo. Sus colores vivos, sanos, podian mas que el albayalde y el soliman del afeite, con que se blanqueaba por simular melancolias. "
+            android:maxLength="100"
+            android:text="Descripcion Ejemplo"
             android:textAlignment="viewStart"
             android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="italic"
 
-            />
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/tvEstado"
@@ -114,6 +155,8 @@
             android:textStyle="bold"
 
             android:textAlignment="center"/>
+
+
         <CheckBox
             android:id="@+id/cbPendiente"
             android:layout_width="match_parent"
@@ -129,13 +172,35 @@
 
         </CheckBox>
 
+        <TextView
+            android:id="@+id/tvTimeTerminado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha y hora terminada"
+            android:padding="1dp"
 
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+
+        <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="yyyy/mm/dd hh:mm:ss"
+        android:padding="1dp"
+        android:textColor="#9b9b9b"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textAlignment="center"/>
     </LinearLayout>
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="50dp"
+    android:layout_marginTop="8dp"
     android:layout_gravity="center">
 
     <Button

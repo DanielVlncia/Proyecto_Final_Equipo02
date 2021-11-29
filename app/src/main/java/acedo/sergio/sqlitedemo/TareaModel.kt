@@ -1,6 +1,8 @@
 package acedo.sergio.sqlitedemo
 
+import android.provider.CalendarContract
 import java.io.Serializable
+import java.time.LocalDateTime
 import java.util.*
 
 data class TareaModel (
@@ -8,7 +10,10 @@ data class TareaModel (
     var name: String = "",
     var Descripcion: String = "",
     var posicion: Int = -1,
-    var estado: String = "Pendiente"
+    var estado: String = "Pendiente",
+    var fechaTerminada : String = "",
+    var horaTerminada :String = "",
+
 ) :Serializable, Comparable<TareaModel> {
 
 

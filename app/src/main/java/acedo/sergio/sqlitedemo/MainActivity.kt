@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.Serializable
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,7 +34,8 @@ class MainActivity : AppCompatActivity() {
 
     companion object{
         var TareasList:ArrayList<TareaModel> = ArrayList<TareaModel>()
-
+        val fechaf= SimpleDateFormat("yyyy/MM/dd")
+         val horaf  = SimpleDateFormat("HH:mm:ss")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,14 +73,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         adapter?.setOnClickDeleteItem {
-            deleteStudent(it.id)
+            deleteTarea(it.id)
         }
 
         adapter?.setOnClickStartItem {
 
 
         }
-
 
 
         }
@@ -89,12 +90,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     var context: Context? = null
-    private fun deleteStudent(id: Int) {
+    private fun deleteTarea(id: Int) {
         if(id==null) return
-
+        val tar =  sqliteHelper.getTareabyId(id)
 
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Seguro que desea eliminar esta Tarea")
+        builder.setMessage("Seguro que desea eliminar esta Tarea con nombre ${tar.name}")
         builder.setCancelable(true)
         builder.setPositiveButton("Si"){dialog, _ ->
             sqliteHelper.deleteStudentbyId(id)
@@ -170,9 +171,12 @@ class MainActivity : AppCompatActivity() {
         if(name.isEmpty() || email.isEmpty()){
             Toast.makeText(this,"Ingrese los datos necesarios", Toast.LENGTH_SHORT).show()
         }else{
-            val std = TareaModel(name = name, Descripcion =  email)
+            val cal  =Calendar.getInstance()
+            val fechaTerminada = fechaf.format(cal.time)
+            val horaTerminada = horaf.format(cal.time)
+            val std = TareaModel(name = name, Descripcion =  email,fechaTerminada = fechaTerminada,horaTerminada = horaTerminada)
             val status = sqliteHelper.insertStudent(std)
-
+            Log.e("Que tal" , "${std}")
             //Check insert succes or not
             if(status >  -1){
              //   Toast.makeText(this,"Tarea anadida", Toast.LENGTH_SHORT).show()
@@ -182,11 +186,15 @@ class MainActivity : AppCompatActivity() {
                  var tarea = sqliteHelper.getStudentbyName(std.name)
                 tarea.posicion = tarea.id
                 sqliteHelper.updateTarea(tarea)
-                std
-                Log.e("Que tal" , "${tarea}")
+
+
+                // Probar GetById
+                sqliteHelper.getTareabyId(1)
+                Log.e("Probar GetById" , "${tarea}")
                 clearEditText()
                 getStudents()
                 TareasList = sqliteHelper.getAllStudents()
+                Toast.makeText(this,"Tarea anadida correctamente", Toast.LENGTH_SHORT).show()
             }else{
 
                 Toast.makeText(this,"Tarea no anadida", Toast.LENGTH_SHORT).show()

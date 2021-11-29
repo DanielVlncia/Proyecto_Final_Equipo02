@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +28,7 @@ class ConsultadeTareas : AppCompatActivity() {
     private lateinit var btnConsultarPendientes: Button
     private lateinit var btnConsultarTerminadas: Button
     private lateinit var btnConsultarEnProgreso: Button
+    private lateinit var btnAtras: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,11 @@ class ConsultadeTareas : AppCompatActivity() {
         }
 
 
+        btnAtras.setOnClickListener {
+            var intent: Intent = Intent(this,MainActivity::class.java)
+            // getStudents()
+            startActivity(intent)
+        }
 
         btnConsultarTodas.setOnClickListener{
             getStudents()
@@ -77,6 +84,36 @@ class ConsultadeTareas : AppCompatActivity() {
             intent.putExtra("Tarea", std as Serializable)
             startActivity(intent)
         }
+        adapter?.setOnClickDeleteItem {
+            deleteTarea(it.id)
+        }
+    }
+
+    private fun deleteTarea(id: Int) {
+
+
+            if(id==null) return
+            val tar =  sqliteHelper.getTareabyId(id)
+
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Seguro que desea eliminar la tarea con nombre: ${tar.name}")
+            builder.setCancelable(true)
+            builder.setPositiveButton("Si"){dialog, _ ->
+                sqliteHelper.deleteStudentbyId(id)
+                getStudents()
+                dialog.dismiss()
+
+            }
+            builder.setNegativeButton("No"){dialog, _ ->
+
+                dialog.dismiss()
+
+            }
+
+            val alert = builder.create()
+            alert.show()
+
+
     }
 
     private fun getStudents() {
@@ -103,13 +140,23 @@ class ConsultadeTareas : AppCompatActivity() {
         val std :ArrayList<TareaModel> = ArrayList()
         for (Tarea in stdList){
             if(Tarea.estado.equals("Terminada")){
+
+
                 std.add(Tarea)
+
                 Log.e("pppp" , "${std.size}")
             }
         }
+
+
+
+
         std.sort()
         adapter?.addItems(std)
     }
+
+
+
     private fun getTareasEnProgreso(){
         val stdList   = sqliteHelper.getAllStudents()
         val std :ArrayList<TareaModel> = ArrayList()
@@ -179,6 +226,7 @@ class ConsultadeTareas : AppCompatActivity() {
     }
 
     private fun initView() {
+        btnAtras = findViewById<Button>(R.id.btnAtras)
         btnConsultarTodas = findViewById<Button>(R.id.btnConsultarTodas)
         btnConsultarPendientes= findViewById<Button>(R.id.btnConsultarPendientes)
         btnConsultarTerminadas= findViewById<Button>(R.id.btnConsultarTerminadas)

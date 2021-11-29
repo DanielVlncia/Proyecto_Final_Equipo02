@@ -25,6 +25,7 @@
 
 
         <Button
+            android:backgroundTint="@color/ColorBotones"
             android:id="@+id/btnConsultarTodas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,6 +34,7 @@
             android:textStyle="bold" />
 
         <Button
+            android:backgroundTint="@color/ColorBotones"
             android:id="@+id/btnConsultarPendientes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +45,7 @@
             android:textStyle="bold" />
 
         <Button
+            android:backgroundTint="@color/ColorBotones"
             android:id="@+id/btnConsultarEnProgreso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,15 +58,38 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnConsultarTerminadas"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginRight="19dp"
-        android:text="Terminadas"
-        android:textAllCaps="false"
-        android:textStyle="bold" />
+        android:gravity="center">
+
+
+        <Button
+            android:id="@+id/btnConsultarTerminadas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="19dp"
+            android:text="Terminadas"
+            android:backgroundTint="@color/ColorBotones"
+            android:textAllCaps="false"
+            android:textStyle="bold" />
+        <Button
+            android:backgroundTint="@color/ColorBotones"
+            android:id="@+id/btnAtras"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="19dp"
+            android:text="Atras"
+            android:textAllCaps="false"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+
 
     <TextView
 
@@ -81,6 +107,8 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
         android:orientation="vertical"
-        android:layout_marginTop="16dp"/>
+        tools:listitem="@layout/card_layout_tarea"
+        />
 </LinearLayout>
